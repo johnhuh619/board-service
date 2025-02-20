@@ -1,7 +1,9 @@
 package com.example.board_service.domain;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
@@ -11,6 +13,8 @@ import java.util.List;
 @Setter
 @Entity
 @Table(name = "members")
+@NoArgsConstructor
+@AllArgsConstructor
 public class Member {
 
     @Id

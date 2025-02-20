@@ -1,6 +1,7 @@
 package com.example.board_service.domain;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,6 +12,7 @@ import java.util.List;
 @Setter
 @Entity
 @Table(name = "posts")
+@Builder
 public class Post {
 
     @Id
