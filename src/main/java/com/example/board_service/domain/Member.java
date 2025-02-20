@@ -23,6 +23,10 @@ public class Member {
     @Column(nullable = false, unique = true)
     private String username;
 
+
+    @Column(nullable = false, unique = true)
+    private String nickname;
+
     @Column(nullable = false)
     private String password;
 

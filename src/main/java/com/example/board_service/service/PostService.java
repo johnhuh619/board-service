@@ -13,6 +13,6 @@ public interface PostService {
 
     Post updatePost(Long postId, Post updatedPost, Long authorId);
 
-    void deletePost();
+    void deletePost(Long postId, Long authorId);
 
 }
