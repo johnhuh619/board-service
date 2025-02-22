@@ -43,7 +43,7 @@ public class PostController {
     }
 
     @DeleteMapping("/{postId}")
-    public ResponseEntity<Void> deletePost(@PathVariable Long postId, @PathVariable Long authorId) {
+    public ResponseEntity<Void> deletePost(@PathVariable Long postId, @RequestParam Long authorId) {
         postService.deletePost(postId, authorId);
         return ResponseEntity.noContent().build();
     }
