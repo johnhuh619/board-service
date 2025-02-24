@@ -29,13 +29,6 @@ public class MemberServiceImpl implements MemberService{
 
     @Override
     @Transactional(readOnly = true)
-    public Member login(String username, String password) {
-        return memberRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("존재하지 않는 사용자입니다."));
-    }
-
-    @Override
-    @Transactional(readOnly = true)
     public Member getProfile(Long memberId) {
         return memberRepository.findById(memberId)
                 .orElseThrow(() -> new RuntimeException("회원이 존재하지 않습니다."));
