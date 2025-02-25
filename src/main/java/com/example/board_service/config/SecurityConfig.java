@@ -33,7 +33,7 @@ public class SecurityConfig {
                 )
                 // H2 콘솔 및 정적 리소스 접근 허용
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/h2-console/**", "/api/auth/**", "/api/members/register").permitAll()
+                        .requestMatchers("/h2-console/**", "/api/auth/**", "/api/members/register", "/api/posts").permitAll()
                         .anyRequest().authenticated()
                 )
                 // 개발용 기본 로그인 폼 사용
