@@ -26,20 +26,18 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(org.springframework.security.config.annotation.web.builders.HttpSecurity http) throws Exception {
         http
                 // H2 콘솔 경로에 대해 CSRF와 프레임 옵션을 비활성화
-                .csrf(csrf -> csrf
-                        .ignoringRequestMatchers(new AntPathRequestMatcher("/h2-console/**"))
-                )
+                .csrf(AbstractHttpConfigurer::disable)
                 .headers(headers -> headers
                         .frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin
                         )
                 )
                 // H2 콘솔 및 정적 리소스 접근 허용
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/h2-console/**", "/api/auth/**").permitAll()
+                        .requestMatchers("/h2-console/**", "/api/auth/**", "/api/members/register").permitAll()
                         .anyRequest().authenticated()
                 )
                 // 개발용 기본 로그인 폼 사용
-                .formLogin(Customizer.withDefaults())
+                .formLogin(form -> form.defaultSuccessUrl("/postList.html", true))
                 .httpBasic(AbstractHttpConfigurer::disable);
         http.addFilterBefore(new JwtAuthenticationFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
         return http.build();

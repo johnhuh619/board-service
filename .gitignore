@@ -37,4 +37,4 @@ out/
 .vscode/
 
 ### 시크릿 키
-src/main/resources/application-key.properties
+**/src/main/resources/application-key.properties
