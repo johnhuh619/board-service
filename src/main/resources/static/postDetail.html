@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>게시글 상세보기</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container mt-4">
+    <h2 id="post-title"></h2>
+    <p id="post-content"></p>
+
+    <hr>
+    <h4>댓글</h4>
+    <div id="comments-container"></div>
+
+    <!-- 댓글 작성 폼 (로그인 상태여야 함) -->
+    <div id="comment-form-section" style="display:none;">
+        <h5>댓글 작성</h5>
+        <form id="comment-form">
+            <div class="form-group">
+                <textarea class="form-control" id="comment-content" rows="3" placeholder="댓글을 입력하세요"></textarea>
+            </div>
+            <button type="submit" class="btn btn-secondary">댓글 등록</button>
+        </form>
+    </div>
+</div>
+
+<!-- jQuery와 Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    // URL 파라미터에서 postId 추출
+    const urlParams = new URLSearchParams(window.location.search);
+    const postId = urlParams.get('postId');
+    const token = localStorage.getItem("jwtToken");
+
+    // 게시글 상세 조회
+    async function loadPostDetail() {
+        try {
+            const response = await fetch(`/api/posts/${postId}`, {
+                headers: {
+                    "Authorization": "Bearer " + token
+                }
+            });
+            if (!response.ok) {
+                throw new Error("게시글 조회 실패");
+            }
+            const post = await response.json();
+            $("#post-title").text(post.title);
+            $("#post-content").text(post.content);
+            renderComments(post.comments);
+        } catch (error) {
+            console.error("게시글 상세 로딩 오류:", error);
+            alert("게시글을 불러오지 못했습니다.");
+        }
+    }
+
+    // 댓글 렌더링
+    function renderComments(comments) {
+        const container = $("#comments-container");
+        container.empty();
+        if (comments.length === 0) {
+            container.append("<p>댓글이 없습니다.</p>");
+            return;
+        }
+        comments.forEach(comment => {
+            const commentDiv = $(`
+          <div class="mb-2">
+            <strong>${comment.author.username}:</strong>
+            <p>${comment.content}</p>
+          </div>
+        `);
+            container.append(commentDiv);
+        });
+    }
+
+    // 댓글 작성 폼 처리
+    $("#comment-form").submit(async function(e) {
+        e.preventDefault();
+        const content = $("#comment-content").val();
+        try {
+            const response = await fetch(`/api/posts/${postId}/comments`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + token
+                },
+                body: JSON.stringify({ content })
+            });
+            if (!response.ok) {
+                throw new Error("댓글 등록 실패");
+            }
+            alert("댓글이 등록되었습니다.");
+            loadPostDetail(); // 댓글 포함한 게시글 재로드
+        } catch (error) {
+            console.error("댓글 등록 오류:", error);
+            alert("댓글 등록에 실패했습니다.");
+        }
+    });
+
+    // 초기화: 게시글 상세 조회 및 로그인 상태에 따른 댓글 폼 표시
+    $(document).ready(function() {
+        loadPostDetail();
+        if (token) {
+            $("#comment-form-section").show();
+        }
+    });
+</script>
+</body>
+</html>
